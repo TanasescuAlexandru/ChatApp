@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">ChatApp-master</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="register">Register</string>
+    <string name="e_mail">E-mail</string>
+    <string name="display_name">Display Name</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="log_out">Log Out</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="login_to_your_account">Login to your Account</string>
+    <string name="login">Login</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_to_chats_fragment">Welcome to Chats fragment</string>
+    <string name="settings">Settings</string>
+</resources>
