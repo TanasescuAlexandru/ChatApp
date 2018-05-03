@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText mDisplayName;
@@ -50,13 +50,11 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterAccountBtn = findViewById(R.id.registerButton);
         mToolbar = findViewById(R.id.mainToolbar);
 
-
         //Toolbar set
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Create account");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Create account");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mProgressBar = new ProgressDialog(this);
-
 
        //get click event from ui and get account details
         mRegisterAccountBtn.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-                            String uid = current_user.getUid();
+                            String uid = Objects.requireNonNull(current_user).getUid();
                             mDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(uid);
 
                             HashMap<String, String> userMap = new HashMap<>();
