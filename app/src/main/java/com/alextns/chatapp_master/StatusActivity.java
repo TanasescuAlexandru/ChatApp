@@ -53,8 +53,9 @@ public class StatusActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Show progress
                 mProgressDialog = new ProgressDialog(StatusActivity.this);
-                mProgressDialog.setTitle("Saving Changes");
-                mProgressDialog.setMessage("Please wait while we save the changes");
+                mProgressDialog.setTitle("Saving Changes !");
+                mProgressDialog.setMessage("Please wait while we save the changes.");
+                mProgressDialog.setCanceledOnTouchOutside(false);
                 mProgressDialog.show();
 
                 String status = mStatus.getText().toString();
@@ -63,6 +64,7 @@ public class StatusActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
                             mProgressDialog.dismiss();
+                            finish();
                         }
 
                         else{

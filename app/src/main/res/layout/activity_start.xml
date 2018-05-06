@@ -4,31 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".StartActivity">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Start Page Chat App!" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="186dp"
+        android:text="Welcome to Thot Chat !"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/createAccountBtn"
         android:layout_width="134dp"
-        android:layout_height="wrap_content"
+        android:layout_height="58dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="142dp"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="25dp"
         android:text="Create New Account" />
 
     <Button
         android:id="@+id/startLogin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/createAccountBtn"
+        android:layout_height="58dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="26dp"
+        android:layout_alignTop="@+id/createAccountBtn"
+        android:layout_marginEnd="25dp"
         android:text="Login Account" />
 </RelativeLayout>

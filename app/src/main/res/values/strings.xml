@@ -12,7 +12,7 @@
     <string name="login">Login</string>
 
     <string name="welcome_to_chats_fragment">Welcome to Chats fragment</string>
-    <string name="settings">Settings</string>
     <string name="save_changes">SAVE CHANGES</string>
     <string name="your_status">Your Status</string>
+    <string name="all_users">All Users</string>
 </resources>

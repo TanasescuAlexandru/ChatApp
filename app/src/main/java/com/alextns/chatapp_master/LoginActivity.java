@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Toolbar mToolbar;
     private EditText mLoginEmail;
     private EditText mLoginPass;
     private Button mLoginButton;
@@ -28,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Toolbar mToolbar;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
