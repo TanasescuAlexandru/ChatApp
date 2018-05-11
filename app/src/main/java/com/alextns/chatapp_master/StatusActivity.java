@@ -78,6 +78,7 @@ public class StatusActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        if(mCurrentUser!=null)
         ((ThotChat)this.getApplication()).startActivityTransitionTimer(mCurrentUser.getUid());
 
 
@@ -86,6 +87,7 @@ public class StatusActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ((ThotChat)this.getApplication()).stopActivityTransitionTimer(mCurrentUser.getUid());
+        if(mCurrentUser!=null)
+            ((ThotChat)this.getApplication()).stopActivityTransitionTimer(mCurrentUser.getUid());
     }
 }
