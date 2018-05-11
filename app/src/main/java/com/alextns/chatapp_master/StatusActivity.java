@@ -75,4 +75,17 @@ public class StatusActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ((ThotChat)this.getApplication()).startActivityTransitionTimer();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((ThotChat)this.getApplication()).stopActivityTransitionTimer();
+    }
 }

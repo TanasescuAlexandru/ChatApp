@@ -10,8 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.Objects;
@@ -21,6 +23,7 @@ public class UsersActivity extends AppCompatActivity {
     private RecyclerView mUsersRecyclerView;
     private DatabaseReference mUsersDatabase;
     private FirebaseRecyclerAdapter<AllUsers, UsersViewHolder> mUsersAdaptor;
+    private FirebaseAuth mAuth;
 
 
 
@@ -32,6 +35,7 @@ public class UsersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_users);
         mUsersDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
         mUsersDatabase.keepSynced(true);
+        mAuth = FirebaseAuth.getInstance();
         setUpRecyclerView();
         mMainToolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(mMainToolbar);
@@ -58,6 +62,7 @@ public class UsersActivity extends AppCompatActivity {
                 holder.setName(model.getName());
                 holder.setStatus(model.getStatus());
                 holder.setThumbImage(model.getThumbImage());
+                holder.setUserOnline(model.getOnline());
 
                 //get user_id from DB in order to get user details in UserProfileActivity that is clicked
                 final String user_id = getRef(position).getKey();
@@ -91,12 +96,25 @@ public class UsersActivity extends AppCompatActivity {
         super.onStop();
         mUsersAdaptor.stopListening();
 
-
     }
     private void setUpRecyclerView(){
         mUsersRecyclerView = findViewById(R.id.users_list);
         mUsersRecyclerView.setHasFixedSize(true);
         mUsersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ((ThotChat)this.getApplication()).startActivityTransitionTimer();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((ThotChat)this.getApplication()).stopActivityTransitionTimer();
     }
 
 }

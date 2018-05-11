@@ -25,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -72,20 +74,33 @@ public class AccountSettingsActivity extends AppCompatActivity {
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         String current_uid = Objects.requireNonNull(mCurrentUser).getUid();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(current_uid);
+        mUserDatabase.keepSynced(true);
+
 
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name = Objects.requireNonNull(dataSnapshot.child("name").getValue()).toString();
                 String status = Objects.requireNonNull(dataSnapshot.child("status").getValue()).toString();
-                String image = Objects.requireNonNull(dataSnapshot.child("image").getValue()).toString();
+                final String image = Objects.requireNonNull(dataSnapshot.child("image").getValue()).toString();
                 String thumb_image = Objects.requireNonNull(dataSnapshot.child("thumb_image").getValue()).toString();
                 mName.setText(name);
                 mStatus.setText(status);
 
                 //set image on settings preview
                 if(!image.equals("default_image")){
-                    Picasso.get().load(image).placeholder(R.drawable.default_avatar).into(mDisplayImage);
+                    Picasso.get().load(image).networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.drawable.default_avatar).into(mDisplayImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Picasso.get().load(image).placeholder(R.drawable.default_avatar).into(mDisplayImage);
+                        }
+                    });
                 }
             }
 
@@ -190,4 +205,20 @@ public class AccountSettingsActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ((ThotChat)this.getApplication()).startActivityTransitionTimer();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((ThotChat)this.getApplication()).stopActivityTransitionTimer();
+    }
 }
+

@@ -60,6 +60,7 @@
         android:layout_height="49dp"
         android:layout_marginBottom="120dp"
         android:layout_marginEnd="20dp"
+        android:backgroundTint="@android:color/holo_orange_dark"
         android:text="@string/login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

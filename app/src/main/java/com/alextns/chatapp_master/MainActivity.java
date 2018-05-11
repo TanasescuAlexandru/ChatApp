@@ -10,12 +10,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private DatabaseReference mUserRef;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser()!=null) {
+            mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+        }
         mMainToolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(mMainToolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Thot Chat");
@@ -39,11 +49,13 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
 
 
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             sendToStart();
@@ -52,13 +64,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void sendToStart(){
-            Intent intent = new Intent(MainActivity.this, StartActivity.class);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = new Intent(MainActivity.this, StartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();        }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ((ThotChat)this.getApplication()).startActivityTransitionTimer();
 
 
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((ThotChat)this.getApplication()).stopActivityTransitionTimer();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -66,11 +89,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.mainLogOutButton) {
-            FirebaseAuth.getInstance().signOut();
+            mAuth.signOut();
             sendToStart();
+
         }
         if (item.getItemId() == R.id.accountSettingsBtn) {
             Intent settingsIntent = new Intent(MainActivity.this, AccountSettingsActivity.class);
@@ -84,5 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
 }
