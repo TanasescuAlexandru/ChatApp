@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     mProgressBar.dismiss();
                     String deviceToken = FirebaseInstanceId.getInstance().getToken();
-                    String currentUserID = mAuth.getCurrentUser().getUid();
+                    String currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
                     mUsersDatabase.child(currentUserID).child("device_token").setValue(deviceToken);
 

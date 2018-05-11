@@ -324,7 +324,7 @@ public class UserProfileActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ((ThotChat)this.getApplication()).startActivityTransitionTimer();
+        ((ThotChat)this.getApplication()).startActivityTransitionTimer(mCurrentUser.getUid());
 
 
     }
@@ -332,6 +332,6 @@ public class UserProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ((ThotChat)this.getApplication()).stopActivityTransitionTimer();
+        ((ThotChat)this.getApplication()).stopActivityTransitionTimer(mCurrentUser.getUid());
     }
 }

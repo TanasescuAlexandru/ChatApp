@@ -1,6 +1,7 @@
 package com.alextns.chatapp_master;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mUserRef;
+    private FirebaseUser mCurrentUser;
+    private String mCurrentUserID;
 
 
 
@@ -56,23 +62,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
+         mCurrentUser = mAuth.getCurrentUser();
+        if (mCurrentUser == null) {
             sendToStart();
-            }
+            }else{
+            mCurrentUserID = mCurrentUser.getUid();
+        }
     }
 
 
     private void sendToStart(){
         Intent intent = new Intent(MainActivity.this, StartActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();        }
 
     @Override
     protected void onPause() {
         super.onPause();
-        ((ThotChat)this.getApplication()).startActivityTransitionTimer();
+        if(mCurrentUserID!=null)
+        ((ThotChat)this.getApplication()).startActivityTransitionTimer(mCurrentUserID);
 
 
     }
@@ -80,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ((ThotChat)this.getApplication()).stopActivityTransitionTimer();
+        if(mCurrentUserID!=null)
+        ((ThotChat)this.getApplication()).stopActivityTransitionTimer(mCurrentUserID);
     }
 
     @Override
@@ -93,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.mainLogOutButton) {
-            mAuth.signOut();
-            sendToStart();
+          FirebaseAuth.getInstance().signOut();
+          sendToStart();
 
         }
         if (item.getItemId() == R.id.accountSettingsBtn) {

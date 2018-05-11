@@ -24,47 +24,6 @@ public class ThotChat extends Application{
 
 
 
-    private Timer mActivityTransitionTimer;
-    private TimerTask mActivityTransitionTimerTask;
-    public boolean wasInBackground;
-    private final long MAX_ACTIVITY_TRANSITION_TIME_MS = 2000;
-
-
-
-    //schedule a task witch is supposed to start in 2 seconds if the timer reach the limit(2 seconds)
-    //task that will set wasInBackground value to true and user online value to Server timestamp
-    //this timer limit should be reached only when the user leaves the app.
-    //added in onPause activity methods
-    public void startActivityTransitionTimer() {
-        this.mActivityTransitionTimer = new Timer();
-        this.mActivityTransitionTimerTask = new TimerTask() {
-            public void run() {
-                ThotChat.this.wasInBackground = true;
-                mUsersDatabase.child("online").setValue(false);
-            }
-        };
-
-        this.mActivityTransitionTimer.schedule(mActivityTransitionTimerTask,
-                MAX_ACTIVITY_TRANSITION_TIME_MS);
-    }
-    //stops the time when an activity resume/starts(added in onResume activity method)
-    public void stopActivityTransitionTimer() {
-        if (this.mActivityTransitionTimerTask != null) {
-            this.mActivityTransitionTimerTask.cancel();
-        }
-
-        if (this.mActivityTransitionTimer != null) {
-            this.mActivityTransitionTimer.cancel();
-        }
-        if (mAuth.getCurrentUser() != null) {
-            mUsersDatabase.child("online").setValue(true);
-        }
-        this.wasInBackground = false;
-    }
-
-
-
-
 
     @Override
     public void onCreate() {
@@ -79,8 +38,8 @@ public class ThotChat extends Application{
         Picasso built = builder.build();
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
-        mAuth = FirebaseAuth.getInstance();
 
+        mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null) {
             mUsersDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
 
@@ -99,5 +58,54 @@ public class ThotChat extends Application{
             });
         }
     }
+
+
+
+
+
+    private Timer mActivityTransitionTimer;
+    private TimerTask mActivityTransitionTimerTask;
+    public boolean wasInBackground;
+    private final long MAX_ACTIVITY_TRANSITION_TIME_MS = 2000;
+
+
+
+    //schedule a task witch is supposed to start in 2 seconds if the timer reach the limit(2 seconds)
+    //task that will set wasInBackground value to true and user online value to Server timestamp
+    //this timer limit should be reached only when the user leaves the app.
+    //added in onPause activity methods
+    public void startActivityTransitionTimer(final String mCurrentUserID) {
+        this.mActivityTransitionTimer = new Timer();
+        this.mActivityTransitionTimerTask = new TimerTask() {
+            public void run() {
+
+                ThotChat.this.wasInBackground = true;
+
+
+                DatabaseReference mOnlineUsersDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUserID);
+                mOnlineUsersDatabase.child("online").setValue(false);
+            }
+        };
+
+        this.mActivityTransitionTimer.schedule(mActivityTransitionTimerTask,
+                MAX_ACTIVITY_TRANSITION_TIME_MS);
+    }
+    //stops the time when an activity resume/starts(added in onResume activity method)
+    public void stopActivityTransitionTimer(String mCurrentUserID) {
+        if (this.mActivityTransitionTimerTask != null) {
+            this.mActivityTransitionTimerTask.cancel();
+        }
+
+        if (this.mActivityTransitionTimer != null) {
+            this.mActivityTransitionTimer.cancel();
+        }
+        DatabaseReference mOnlineUsersDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUserID);
+        mOnlineUsersDatabase.child("online").setValue(true);
+        this.wasInBackground = false;
+
+    }
+
+
+
 
 }
