@@ -320,7 +320,7 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     public void checkAndSetCurrentState(int req_type){
-        
+
         switch (req_type) {
             case 0:
                 mSendRequestBtn.setEnabled(true);

@@ -9,9 +9,9 @@ public class AllUsers {
     public String name;
     public String status;
     public String thumb_image;
-    public boolean online;
+    public Object online;
 
-    public boolean getOnline() {
+    public Object getOnline() {
         return online;
     }
 
@@ -21,7 +21,7 @@ public class AllUsers {
 
     }
 
-    public AllUsers(String name, String status, String thumb_image, boolean online) {
+    public AllUsers(String name, String status, String thumb_image,Object online) {
         this.name = name;
         this.status = status;
         this.thumb_image = thumb_image;

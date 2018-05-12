@@ -29,7 +29,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="223dp"
         android:text="Display Name"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-223dp"
         android:text="Hi there!"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="normal" />
 

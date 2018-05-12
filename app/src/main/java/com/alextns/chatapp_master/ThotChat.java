@@ -8,6 +8,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
@@ -47,7 +48,7 @@ public class ThotChat extends Application{
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot != null) {
-                        mUsersDatabase.child("online").onDisconnect().setValue(false);
+                        mUsersDatabase.child("online").onDisconnect().setValue(ServerValue.TIMESTAMP);
                     }
                 }
 
@@ -83,7 +84,7 @@ public class ThotChat extends Application{
 
 
                 DatabaseReference mOnlineUsersDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mCurrentUserID);
-                mOnlineUsersDatabase.child("online").setValue(false);
+                mOnlineUsersDatabase.child("online").setValue(ServerValue.TIMESTAMP);
             }
         };
 

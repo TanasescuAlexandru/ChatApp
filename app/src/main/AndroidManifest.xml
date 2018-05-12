@@ -56,7 +56,7 @@
             android:name=".UsersActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".UserProfileActivity"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".UsersActivity" >
             <intent-filter>
                 <action android:name="com.alextns.chatapp_master.TARGET_NOTIFICATION"/>
                 <category android:name="android.intent.category.DEFAULT"/>

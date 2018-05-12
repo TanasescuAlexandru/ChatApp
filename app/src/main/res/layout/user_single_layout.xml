@@ -53,18 +53,18 @@
         android:layout_alignStart="@+id/userSingleName"
         android:layout_marginStart="10dp"
         android:layout_marginTop="28dp"
-        android:text="Just now"
+        android:text="Online"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         app:layout_constraintStart_toEndOf="@+id/userSingleImage"
         app:layout_constraintTop_toBottomOf="@+id/userSingleName" />
 
     <ImageView
         android:id="@+id/user_online_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="19dp"
+        android:layout_height="17dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="25dp"
         app:layout_constraintStart_toEndOf="@+id/userSingleName"
         app:layout_constraintTop_toTopOf="parent"
