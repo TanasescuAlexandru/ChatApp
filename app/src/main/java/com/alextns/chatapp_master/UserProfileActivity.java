@@ -85,9 +85,9 @@ public class UserProfileActivity extends AppCompatActivity {
         mUserImage = findViewById(R.id.userProfileImage);
         mSendRequestBtn = findViewById(R.id.sendRequestBtn);
         mDeclineFriendRequestBtn = findViewById(R.id.declineFriendRequestBtn);
-        mDeclineFriendRequestBtn.setVisibility(View.INVISIBLE);
         //default current state = 0 (NOT FRIENDS)
         current_state = recivedRequestState;
+        checkAndSetCurrentState(current_state);
         mProgressDialog = new ProgressDialog(UserProfileActivity.this);
         mProgressDialog.setTitle("Loading User Data !");
         mProgressDialog.setMessage("Please wait while we load the user data.");
@@ -103,20 +103,28 @@ public class UserProfileActivity extends AppCompatActivity {
                 mUserProfileName.setText(displayName);
                 mUserProfileStatus.setText(displayStatus);
 
+
                 Picasso.get().load(displayImage).networkPolicy(NetworkPolicy.OFFLINE).fit().centerCrop()
                         .placeholder(R.drawable.default_avatar).into(mUserImage, new Callback() {
-                            @Override
-                            public void onSuccess() {
+                    @Override
+                    public void onSuccess() {
 
-                            }
+                    }
 
-                            @Override
-                            public void onError(Exception e) {
-                                Picasso.get().load(displayImage).fit().centerCrop().placeholder(R.drawable.default_avatar).into(mUserImage);
-                            }
-                        });
+                    @Override
+                    public void onError(Exception e) {
+                        Picasso.get().load(displayImage).fit().centerCrop().placeholder(R.drawable.default_avatar).into(mUserImage);
+                    }
+                });
 
 
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                mProgressDialog.dismiss();
+
+            }
+        });
 
 
                 //Friends request
@@ -127,17 +135,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         if (dataSnapshot.hasChild(user_id)) {
                             String req_type = dataSnapshot.child(user_id).child("request_type").getValue().toString();
 
+                            checkAndSetCurrentState(Integer.parseInt(req_type));
 
-                            if (Integer.parseInt(req_type) == 1) {
-                                current_state = 1;
-                                mSendRequestBtn.setText("Cancel Friend Request");
-
-
-                            } else if (Integer.parseInt(req_type) == 2) {
-                                mDeclineFriendRequestBtn.setVisibility(View.VISIBLE);
-                                current_state = 2;
-                                mSendRequestBtn.setText("Accept Friend Request");
-                            }
                             mProgressDialog.dismiss();
 
 
@@ -148,8 +147,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.hasChild(user_id)) {
-                                        current_state = 3;
-                                        mSendRequestBtn.setText("Unfriend this person");
+                                        checkAndSetCurrentState(3);
                                     }
                                 }
                                 @Override
@@ -170,14 +168,10 @@ public class UserProfileActivity extends AppCompatActivity {
                 });
 
 
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                mProgressDialog.dismiss();
 
-            }
-        });
+
+
 
         mDeclineFriendRequestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,10 +186,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
                             if (databaseError == null){
-                                mSendRequestBtn.setEnabled(true);
-                                current_state = 0;
-                                mSendRequestBtn.setText("Send Friend Request");
-                                mDeclineFriendRequestBtn.setVisibility(View.INVISIBLE);
+                               checkAndSetCurrentState(0);
                             }else {
                                 Toast.makeText(UserProfileActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -232,9 +223,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError == null){
-                                mSendRequestBtn.setEnabled(true);
-                                current_state = 1;
-                                mSendRequestBtn.setText("Cancel Friend Request");
+                                checkAndSetCurrentState(1);
                             }else {
                                 Toast.makeText(UserProfileActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -252,9 +241,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError == null){
-                                mSendRequestBtn.setEnabled(true);
-                                current_state = 0;
-                                mSendRequestBtn.setText("Send Friend Request");
+                                checkAndSetCurrentState(0);
                             }else {
                                 Toast.makeText(UserProfileActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
                             }
@@ -279,10 +266,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
                             if (databaseError == null){
-                                mSendRequestBtn.setEnabled(true);
-                                current_state = 3;
-                                mSendRequestBtn.setText("Unfriend this person");
-                                mDeclineFriendRequestBtn.setVisibility(View.INVISIBLE);
+                                checkAndSetCurrentState(3);
 
                             }
                             else {
@@ -303,9 +287,7 @@ public class UserProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError == null){
-                                        mSendRequestBtn.setEnabled(true);
-                                        current_state = 0;
-                                        mSendRequestBtn.setText("Send Friend Request");
+                                        checkAndSetCurrentState(0);
 
                                     }
                                     else {
@@ -320,7 +302,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-    }
+}
     @Override
     protected void onPause() {
         super.onPause();
@@ -336,4 +318,34 @@ public class UserProfileActivity extends AppCompatActivity {
         if(mCurrentUser!=null)
         ((ThotChat)this.getApplication()).stopActivityTransitionTimer(mCurrentUser.getUid());
     }
+
+    public void checkAndSetCurrentState(int req_type){
+        
+        switch (req_type) {
+            case 0:
+                mSendRequestBtn.setEnabled(true);
+                mDeclineFriendRequestBtn.setVisibility(View.INVISIBLE);
+                current_state = 0;
+                mSendRequestBtn.setText("Send Friend Request");
+                break;
+            case 1:
+                mDeclineFriendRequestBtn.setVisibility(View.INVISIBLE);
+                current_state = 1;
+                mSendRequestBtn.setEnabled(true);
+                mSendRequestBtn.setText("Cancel Friend Request");
+                break;
+            case 2:
+                mDeclineFriendRequestBtn.setVisibility(View.VISIBLE);
+                current_state = 2;
+                mSendRequestBtn.setText("Accept Friend Request");
+                break;
+            case 3:
+                mSendRequestBtn.setEnabled(true);
+                current_state = 3;
+                mSendRequestBtn.setText("Unfriend this person");
+                mDeclineFriendRequestBtn.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
+
 }
