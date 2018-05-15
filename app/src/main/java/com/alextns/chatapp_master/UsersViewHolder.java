@@ -39,7 +39,7 @@ public class UsersViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setThumbImage(String thumb_image){
-        CircleImageView mDisplayImage = mView.findViewById(R.id.userSingleImage);
+        CircleImageView mDisplayImage = mView.findViewById(R.id.userChatImage);
         Picasso.get().load(thumb_image).placeholder(R.drawable.default_avatar).into(mDisplayImage);
     }
 
@@ -62,4 +62,5 @@ public class UsersViewHolder extends RecyclerView.ViewHolder {
         }
 
     }
+
 }

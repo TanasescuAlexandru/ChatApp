@@ -1,9 +1,12 @@
 package com.alextns.chatapp_master;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,6 +33,7 @@ public class FriendsFragment extends Fragment {
     private DatabaseReference mUsersDatabase;
     private FirebaseRecyclerAdapter<Friends, UsersViewHolder> mFriendsAdaptor;
     private String mCurrentUser;
+    private String mChatFriendName;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -70,26 +74,25 @@ public class FriendsFragment extends Fragment {
                         .inflate(R.layout.user_single_layout, parent, false);
 
 
-
                 return new UsersViewHolder(mView);
             }
 
             @Override
             protected void onBindViewHolder(@NonNull final UsersViewHolder holder, int position, @NonNull final Friends model) {
 
-                String list_user_id = getRef(position).getKey();
+                final String list_user_id = getRef(position).getKey();
                 mUsersDatabase.child(list_user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot!=null) {
-                            String userName = dataSnapshot.child("name").getValue().toString();
-                            String userStatus = dataSnapshot.child("status").getValue().toString();
-                            String thumbImage = dataSnapshot.child("thumb_image").getValue().toString();
-                            Object userOnline = dataSnapshot.child("online").getValue();
-                            holder.setName(userName);
-                            holder.setStatus(userStatus);
-                            holder.setUserOnline(userOnline);
-                            holder.setThumbImage(thumbImage);
+                            mChatFriendName = dataSnapshot.child("name").getValue().toString();
+                            String mChatFriendStatus = dataSnapshot.child("status").getValue().toString();
+                            String mChatFriendThumb = dataSnapshot.child("thumb_image").getValue().toString();
+                            Object mChatFriendOnline = dataSnapshot.child("online").getValue();
+                            holder.setName(mChatFriendName);
+                            holder.setStatus(mChatFriendStatus);
+                            holder.setUserOnline(mChatFriendOnline);
+                            holder.setThumbImage(mChatFriendThumb);
                         }
                     }
 
@@ -99,7 +102,33 @@ public class FriendsFragment extends Fragment {
 
                     }
                 });
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CharSequence options [] = new CharSequence[] {"Open Profile", "Send message"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Select Option");
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Click event for each item
+                                if (which == 0){
+                                    Intent userProfileIntent = new Intent(getContext(), UserProfileActivity.class);
+                                    userProfileIntent.putExtra("user_id", list_user_id);
+                                    startActivity(userProfileIntent);
+                                }else if (which ==1) {
+                                    //go to chat
+                                    Intent chatProfileIntent = new Intent(getContext(), ChatActivity.class);
+                                    chatProfileIntent.putExtra("user_id", list_user_id);
+                                    chatProfileIntent.putExtra("user_name", mChatFriendName);
+                                    startActivity(chatProfileIntent);
+                                }
 
+                            }
+                        });
+                        builder.show();
+                    }
+                });
 
 
             }
